@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oil Packaging Industry Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Oil Packaging Industry Dashboard</h1>
+        <nav>
+            <button onclick="showSection('dashboard')">Dashboard</button>
+            <button onclick="showSection('products')">Products</button>
+            <button onclick="showSection('inventory')">Inventory</button>
+            <button onclick="showSection('orders')">Orders</button>
+            <button onclick="showSection('employees')">Employees</button>
+            <button onclick="showSection('suppliers')">Suppliers</button>
+            <button onclick="showSection('logistics')">Logistics</button>
+            <button onclick="showSection('quality')">Quality Control</button>
+            <button onclick="showSection('equipment')">Equipment</button>
+            <button onclick="showSection('finance')">Finance</button>
+            <button onclick="showSection('reports')">Reports</button>
+            <button onclick="showSection('safety')">Safety/Compliance</button>
+            <button onclick="showSection('about')">About</button>
+        </nav>
+    </header>
+    <main>
+        <section id="safety" class="hidden-section">
+            <h2>Safety & Compliance Documentation</h2>
+            <form id="safetyForm">
+                <input type="text" id="safetyTitle" placeholder="Document Title" required>
+                <input type="file" id="safetyFile" accept="application/pdf,image/*" required>
+                <button type="submit">Upload Document</button>
+            </form>
+            <table id="safetyTable">
+                <thead>
+                    <tr><th>Title</th><th>File</th><th>Actions</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section id="reports" class="hidden-section">
+            <h2>Reports & Analytics</h2>
+            <div id="reportsContent">
+                <button onclick="generateReport('sales')">Sales Report</button>
+                <button onclick="generateReport('inventory')">Inventory Report</button>
+                <button onclick="generateReport('quality')">Quality Report</button>
+                <button onclick="generateReport('equipment')">Equipment Report</button>
+                <div id="reportResult" style="margin-top:1em;"></div>
+            </div>
+        </section>
+        <section id="finance" class="hidden-section">
+            <h2>Financial Summary</h2>
+            <form id="financeForm">
+                <input type="date" id="financeDate" required>
+                <input type="number" id="financeAmount" placeholder="Amount ($)" required>
+                <select id="financeType" required>
+                    <option value="Sale">Sale</option>
+                    <option value="Expense">Expense</option>
+                </select>
+                <input type="text" id="financeDesc" placeholder="Description" required>
+                <button type="submit">Add Record</button>
+            </form>
+            <table id="financeTable">
+                <thead>
+                    <tr><th>Date</th><th>Type</th><th>Amount ($)</th><th>Description</th><th>Actions</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="financeSummary">
+                <h3>Summary</h3>
+                <p id="totalSales">Total Sales: $0</p>
+                <p id="totalExpenses">Total Expenses: $0</p>
+                <p id="netProfit">Net Profit: $0</p>
+            </div>
+        </section>
+        <section id="equipment" class="hidden-section">
+            <h2>Equipment & Machinery Management</h2>
+            <form id="equipmentForm">
+                <input type="text" id="equipmentName" placeholder="Equipment Name" required>
+                <input type="text" id="equipmentType" placeholder="Type" required>
+                <input type="date" id="equipmentLastMaint" placeholder="Last Maintenance" required>
+                <input type="date" id="equipmentNextMaint" placeholder="Next Maintenance" required>
+                <select id="equipmentStatus" required>
+                    <option value="Operational">Operational</option>
+                    <option value="Under Maintenance">Under Maintenance</option>
+                    <option value="Out of Service">Out of Service</option>
+                </select>
+                <button type="submit">Add Equipment</button>
+            </form>
+            <table id="equipmentTable">
+                <thead>
+                    <tr><th>Name</th><th>Type</th><th>Last Maintenance</th><th>Next Maintenance</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section id="quality" class="hidden-section">
+            <h2>Quality Control Records</h2>
+            <form id="qualityForm">
+                <input type="text" id="qcProduct" placeholder="Product" required>
+                <input type="text" id="qcBatch" placeholder="Batch Number" required>
+                <input type="date" id="qcDate" required>
+                <input type="text" id="qcInspector" placeholder="Inspector" required>
+                <select id="qcResult" required>
+                    <option value="Pass">Pass</option>
+                    <option value="Fail">Fail</option>
+                </select>
+                <input type="text" id="qcNotes" placeholder="Notes">
+                <button type="submit">Add Record</button>
+            </form>
+            <table id="qualityTable">
+                <thead>
+                    <tr><th>Product</th><th>Batch</th><th>Date</th><th>Inspector</th><th>Result</th><th>Notes</th><th>Actions</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section id="logistics" class="hidden-section">
+            <h2>Delivery & Logistics Tracking</h2>
+            <form id="logisticsForm">
+                <input type="text" id="deliveryProduct" placeholder="Product" required>
+                <input type="text" id="deliveryDriver" placeholder="Driver Name" required>
+                <input type="text" id="deliveryVehicle" placeholder="Vehicle" required>
+                <input type="date" id="deliveryDate" required>
+                <select id="deliveryStatus" required>
+                    <option value="Pending">Pending</option>
+                    <option value="In Transit">In Transit</option>
+                    <option value="Delivered">Delivered</option>
+                </select>
+                <button type="submit">Add Delivery</button>
+            </form>
+            <table id="logisticsTable">
+                <thead>
+                    <tr><th>Product</th><th>Driver</th><th>Vehicle</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section id="suppliers" class="hidden-section">
+            <h2>Supplier Management</h2>
+            <form id="supplierForm">
+                <input type="text" id="supplierName" placeholder="Supplier Name" required>
+                <input type="text" id="supplierContact" placeholder="Contact" required>
+                <input type="text" id="supplierProducts" placeholder="Supplied Products (comma separated)" required>
+                <button type="submit">Add Supplier</button>
+            </form>
+            <table id="supplierTable">
+                <thead>
+                    <tr><th>Name</th><th>Contact</th><th>Supplied Products</th><th>Actions</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section id="employees" class="hidden-section">
+            <h2>Employee Management</h2>
+            <form id="employeeForm">
+                <input type="text" id="employeeName" placeholder="Name" required>
+                <input type="text" id="employeeRole" placeholder="Role" required>
+                <input type="text" id="employeeContact" placeholder="Contact" required>
+                <input type="file" id="employeePhoto" accept="image/*" required>
+                <button type="submit">Add Employee</button>
+            </form>
+            <table id="employeeTable">
+                <thead>
+                    <tr><th>Photo</th><th>Name</th><th>Role</th><th>Contact</th><th>Actions</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section id="dashboard" class="active-section">
+            <h2>Welcome to the Oil Packaging Industry Management System</h2>
+            <p>Use the navigation above to manage products, inventory, and orders.</p>
+            <div id="adverts" class="adverts-section">
+                <h3>Adverts</h3>
+                <div class="adverts-carousel">
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Ad 1" class="ad-image active">
+                    <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" alt="Ad 2" class="ad-image">
+                    <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" alt="Ad 3" class="ad-image">
+                </div>
+            </div>
+        </section>
+        <section id="products" class="hidden-section">
+            <h2>Product Management</h2>
+            <form id="productForm">
+                <input type="text" id="productName" placeholder="Product Name" required>
+                <input type="number" id="productVolume" placeholder="Volume (L)" required>
+                <input type="number" id="productPrice" placeholder="Price ($)" required>
+                <input type="file" id="productImage" accept="image/*" required>
+                <button type="submit">Add Product</button>
+            </form>
+            <table id="productTable">
+                <thead>
+                    <tr><th>Image</th><th>Name</th><th>Volume (L)</th><th>Price ($)</th><th>Actions</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section id="inventory" class="hidden-section">
+            <h2>Inventory Tracking</h2>
+            <table id="inventoryTable">
+                <thead>
+                    <tr><th>Image</th><th>Product</th><th>Stock</th><th>Price ($)</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section id="orders" class="hidden-section">
+            <h2>Order Management</h2>
+            <form id="orderForm">
+                <input type="text" id="orderCustomer" placeholder="Customer Name" required>
+                <select id="orderProduct" required></select>
+                <input type="number" id="orderQuantity" placeholder="Quantity" required>
+                <button type="submit">Place Order</button>
+            </form>
+            <table id="orderTable">
+                <thead>
+                    <tr><th>Customer</th><th>Product</th><th>Quantity</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section id="about" class="hidden-section">
+            <h2>About</h2>
+            <p>This interactive dashboard helps manage products, inventory, and orders for an oil packaging industry.</p>
+        </section>
+        <a href="https://1drv.ms/w/c/d1b2dc43a7f91621/EaoWZ9ASWZ9BqOlRXoFObscBfeGLazHnuSVITCIAnrqcng?e=bsQxT9" download="https://1drv.ms/w/c/d1b2dc43a7f91621/EaoWZ9ASWZ9BqOlRXoFObscBfeGLazHnuSVITCIAnrqcng?e=bsQxT9">Follow me on Facebook</a>
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>
