@@ -1,0 +1,235 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Marine Drone Inspection — Organisms & Monitoring</title>
+  <style>
+    :root{--accent:#0ea5a4;--dark:#052028;--muted:#6b7280}
+    body{font-family:Inter,system-ui,Arial,sans-serif;margin:0;background:linear-gradient(180deg,#e6f7fb 0%, #f7fcff 100%);color:#042a2a}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:rgba(255,255,255,0.6);backdrop-filter:blur(6px);position:sticky;top:0;z-index:40;box-shadow:0 6px 18px rgba(2,6,23,0.06)}
+    .logo{display:flex;align-items:center;gap:10px}
+    .logo .mark{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7dd3fc);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+    nav a{margin-left:18px;color:var(--dark);text-decoration:none;font-weight:600}.hero{padding:56px 28px;display:grid;grid-template-columns:1fr 520px;gap:36px;align-items:center}
+.hero h1{font-size:34px;margin:0 0 10px}
+.hero p{color:var(--muted);margin:0 0 20px}
+.cta{display:inline-block;padding:10px 16px;background:var(--accent);color:white;border-radius:8px;text-decoration:none;font-weight:700}
+
+/* drone stage */
+.stage{position:relative;background:linear-gradient(180deg,#dff7fb,#f7ffff);height:360px;border-radius:12px;overflow:hidden;box-shadow:0 8px 30px rgba(2,6,23,0.06);border:1px solid rgba(2,6,23,0.04)}
+.water{position:absolute;left:0;right:0;bottom:0;height:60%;background:linear-gradient(180deg,#6dd3e8 0%, #0ea5a4 100%);transform:translateY(30%);opacity:0.95}
+.sky{position:absolute;left:0;right:0;top:0;height:40%;background:linear-gradient(180deg,#d9f1fb,rgba(255,255,255,0));}
+
+/* animated drone (SVG) */
+.drone{position:absolute;top:22%;left:-10%;width:140px;height:100px;transform-origin:center}
+@keyframes flyAcross {0%{left:-20%;transform:translateY(0) rotate(-4deg)}25%{left:30%;transform:translateY(-8px) rotate(2deg)}50%{left:55%;transform:translateY(0) rotate(-2deg)}75%{left:80%;transform:translateY(6px) rotate(3deg)}100%{left:120%;transform:translateY(0) rotate(-4deg)}}
+.drone.fly{animation:flyAcross 12s linear infinite}
+
+/* sonar beam */
+.beam{position:absolute;width:4px;height:140px;left:50%;top:70px;transform:translateX(-50%);filter:blur(6px);opacity:0.55}
+.locale{padding:18px}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.card{background:white;padding:14px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.04);}
+
+section{padding:34px 28px}
+h2{margin:0 0 12px}
+
+.team{display:flex;gap:14px}
+.person{background:white;padding:12px;border-radius:12px;display:flex;gap:12px;align-items:center;box-shadow:0 6px 18px rgba(2,6,23,0.04)}
+.person img{width:88px;height:88px;border-radius:10px;object-fit:cover}
+.person h3{margin:0}
+.person p{margin:4px 0 0;color:var(--muted);font-size:14px}
+
+footer{padding:22px 28px;background:#f2fbfb;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+
+/* responsive */
+@media (max-width:920px){.hero{grid-template-columns:1fr;}.stage{height:280px}.grid{grid-template-columns:1fr}.team{flex-direction:column}}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><div class="mark">MD</div><div><strong>MarineDrone</strong><div style="font-size:12px;color:var(--muted)">Inspection & Monitoring</div></div></div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#team">Team</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>  <main>
+    <section class="hero">
+      <div>
+        <h1>Autonomous marine drone inspection of marine organisms</h1>
+        <p>We combine robotics, underwater imaging and AI to monitor marine life, detect invasive species, and collect environmental data with minimal disturbance.</p>
+        <a class="cta" href="#gallery">Explore Gallery</a><div class="grid" style="margin-top:20px">
+      <div class="card">
+        <strong>Real-time sensors</strong>
+        <p id="sensors" style="margin:8px 0 0;color:var(--muted)">Loading sensor data…</p>
+      </div>
+      <div class="card">
+        <strong>Mission status</strong>
+        <p id="status" style="margin:8px 0 0;color:var(--muted)">Preparing mission planner…</p>
+      </div>
+      <div class="card">
+        <strong>Collected samples</strong>
+        <p id="samples" style="margin:8px 0 0;color:var(--muted)">0 organisms catalogued</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div>
+    <div class="stage" aria-label="drone demo stage">
+      <div class="sky"></div>
+      <div class="drone fly" id="drone" title="Marine drone (demo)">
+        <!-- simple drone SVG -->
+        <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <ellipse cx="100" cy="70" rx="48" ry="20" fill="#0ea5a4" opacity="0.95"></ellipse>
+            <rect x="78" y="48" width="44" height="18" rx="6" fill="#052028"></rect>
+            <!-- arms/propcaps -->
+            <g fill="#0b7285">
+              <rect x="18" y="26" width="20" height="6" rx="3" transform="rotate(12 28 29)"></rect>
+              <rect x="160" y="92" width="20" height="6" rx="3" transform="rotate(-12 170 95)"></rect>
+            </g>
+            <!-- propellers -->
+            <g fill="#e6fffb" opacity="0.95">
+              <circle cx="28" cy="34" r="12"></circle>
+              <circle cx="172" cy="106" r="12"></circle>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <!-- beam to water -->
+      <div class="beam" style="left:22%;top:100px;transform:translateX(-50%) rotate(3deg);">
+        <svg width="20" height="160" viewBox="0 0 20 160" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="0" width="4" height="160" rx="2" fill="#bff1f0" opacity="0.22"></rect></svg>
+      </div>
+
+      <div class="beam" style="left:70%;top:120px;transform:translateX(-50%) rotate(-2deg);">
+        <svg width="16" height="140" viewBox="0 0 16 140" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="0" width="4" height="140" rx="2" fill="#bff1f0" opacity="0.18"></rect></svg>
+      </div>
+
+      <div class="water"></div>
+    </div>
+
+    <div class="locale">
+      <small style="color:var(--muted)">Demo: drone automatically surveys a transect while collecting images and environmental data.</small>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <h2>About the project</h2>
+  <p style="color:var(--muted);max-width:900px">This project focuses on a lightweight, modular aquatic drone equipped with high-resolution cameras, multispectral lighting, and environmental sensors. The drone performs low-impact surveys to study fish populations, coral health, algal blooms and invasive organisms. Data is annotated with geotags and timecodes for later analysis using machine learning models.</p>
+
+  <div class="grid" style="margin-top:18px">
+    <div class="card"><strong>Autonomy</strong><p style="color:var(--muted);margin:8px 0 0">Waypoint navigation, obstacle avoidance and adaptive transects.</p></div>
+    <div class="card"><strong>Imaging</strong><p style="color:var(--muted);margin:8px 0 0">High-frame-rate cameras + multispectral lights for organism ID and health assessment.</p></div>
+    <div class="card"><strong>Cloud analysis</strong><p style="color:var(--muted);margin:8px 0 0">Secure upload and automated annotation pipelines for ML training.</p></div>
+  </div>
+</section>
+
+<section id="team">
+  <h2>Project Team</h2>
+  <p style="color:var(--muted)">The core team behind the MarineDrone project. Photos below are illustrative placeholders; replace with actual team headshots.</p>
+
+  <div class="team" style="margin-top:12px">
+    <div class="person">
+      <img src="https://via.placeholder.com/300x300.png?text=Lead+Engineer" alt="Lead Engineer">
+      <div>
+        <h3>Dr. Amina K. Mwangi</h3>
+        <p>Lead Robotics Engineer — Designed the mechanical platform and navigation systems.</p>
+        <p style="font-size:13px;color:var(--muted);margin-top:6px">Role: System design, integration, sea trials</p>
+      </div>
+    </div>
+
+    <div class="person">
+      <img src="https://via.placeholder.com/300x300.png?text=Marine+Biologist" alt="Marine Biologist">
+      <div>
+        <h3>Prof. Leo N. Otieno</h3>
+        <p>Marine Biologist — Led organism identification and ecological study design.</p>
+        <p style="font-size:13px;color:var(--muted);margin-top:6px">Role: Field protocols, data labelling</p>
+      </div>
+    </div>
+
+    <div class="person">
+      <img src="https://via.placeholder.com/300x300.png?text=ML+Lead" alt="Machine Learning Lead">
+      <div>
+        <h3>Sara P. Njeri</h3>
+        <p>ML & Data Scientist — Built pipelines for species classification and anomaly detection.</p>
+        <p style="font-size:13px;color:var(--muted);margin-top:6px">Role: Model training, dashboarding</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <h2>Gallery & Media</h2>
+  <p style="color:var(--muted)">Collection of images and short clips captured during missions.</p>
+  <div class="grid" style="margin-top:12px">
+    <div class="card"><img src="https://via.placeholder.com/720x420.png?text=Underwater+Image+1" alt="u1" style="width:100%;border-radius:8px"></div>
+    <div class="card"><img src="https://via.placeholder.com/720x420.png?text=Underwater+Image+2" alt="u2" style="width:100%;border-radius:8px"></div>
+    <div class="card"><img src="https://via.placeholder.com/720x420.png?text=Drone+On+Deck" alt="d1" style="width:100%;border-radius:8px"></div>
+  </div>
+</section>
+
+<section id="data">
+  <h2>Live / Simulated Data</h2>
+  <div class="grid" style="margin-top:12px">
+    <div class="card"><strong>Water temp</strong><div id="temp" style="font-size:22px;margin-top:8px">-- °C</div></div>
+    <div class="card"><strong>pH level</strong><div id="ph" style="font-size:22px;margin-top:8px">--</div></div>
+    <div class="card"><strong>Visibility</strong><div id="vis" style="font-size:22px;margin-top:8px">-- m</div></div>
+  </div>
+  <p style="color:var(--muted);margin-top:10px">These panels show simulated telemetry for demo purposes.</p>
+</section>
+
+<section id="contact">
+  <h2>Contact & Collaboration</h2>
+  <p style="color:var(--muted)">Want to collaborate or try this system in your area? Send a message.</p>
+  <form onsubmit="event.preventDefault();alert('Message sent (demo)')" style="max-width:700px;background:white;padding:14px;border-radius:8px;box-shadow:0 8px 20px rgba(2,6,23,0.04)">
+    <div style="display:flex;gap:8px;margin-bottom:8px"><input required placeholder="Your name" style="flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef0"><input required placeholder="Email" style="flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef0"></div>
+    <textarea required placeholder="How can we help?" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef0;height:110px"></textarea>
+    <div style="margin-top:10px"><button style="padding:10px 14px;border-radius:8px;border:0;background:var(--accent);color:white;font-weight:700">Send message</button></div>
+  </form>
+</section>
+
+  </main>  <footer>
+    <div>© MarineDrone — Open research demo</div>
+    <div style="font-size:13px;color:var(--muted)">Built with care • Replace placeholder images with real team photos</div>
+  </footer>  <script>
+    // Simulated sensor & mission data (demo-purpose)
+    const sensorsEl = document.getElementById('sensors');
+    const statusEl = document.getElementById('status');
+    const samplesEl = document.getElementById('samples');
+    const tempEl = document.getElementById('temp');
+    const phEl = document.getElementById('ph');
+    const visEl = document.getElementById('vis');
+
+    let samples = 0;
+    function updateDemo(){
+      const t = (18 + Math.random()*6).toFixed(1);
+      const ph = (7.8 + (Math.random()-0.5)*0.6).toFixed(2);
+      const vis = (2 + Math.random()*8).toFixed(1);
+      tempEl.textContent = t + ' °C';
+      phEl.textContent = ph;
+      visEl.textContent = vis + ' m';
+
+      sensorsEl.textContent = Temp: ${t} °C · pH: ${ph} · Visibility: ${vis} m;
+
+      // mission status progress
+      const states = ['Initialising sensors','Navigating transect','Collecting images','Uploading data','Awaiting orders'];
+      statusEl.textContent = states[Math.floor(Date.now()/4000)%states.length];
+
+      // occasionally detect organism
+      if(Math.random() < 0.35){ samples += Math.floor(Math.random()*3); samplesEl.textContent = samples + ' organisms catalogued'; }
+    }
+    setInterval(updateDemo,1800); updateDemo();
+
+    // Accessibility: pause animation on reduced-motion
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if(prefersReduced.matches){ document.getElementById('drone').classList.remove('fly'); }
+  </script></body>
+</html>
